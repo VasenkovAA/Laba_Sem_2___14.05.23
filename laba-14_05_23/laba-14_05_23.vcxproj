@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CTreeLib.cpp" />
     <ClCompile Include="laba-14_05_23.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CTreeLib.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
