@@ -1,0 +1,4 @@
+﻿  MyForm.cpp
+C:\Users\user\Desktop\Laba_Sem_2___14.05.23\Laba_with_GUI_CLR\Laba_with_GUI_CLR\Laba_with_GUI_CLR\MyForm.cpp(6,33): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
+  DBEditForm.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
+  Laba_with_GUI_CLR.vcxproj -> C:\Users\user\Desktop\Laba_Sem_2___14.05.23\Laba_with_GUI_CLR\Laba_with_GUI_CLR\x64\Debug\Laba_with_GUI_CLR.exe
