@@ -173,7 +173,10 @@ public:
 
     template<typename T>
     friend ostream& operator<<(ostream& os, TMass<T>& tmp);
-    //template<typename T>
+    template<typename T>
+    friend class TTree;
+    template<typename T>
+    friend class TNode;
 };
 template<typename T>
 ostream& operator<<(ostream& os, TMass<T>& tmp) {
@@ -191,7 +194,6 @@ class TStringMass {
 private:
     int Count;
     string* Item;
-
 public:
     string getItem(int Index) {
         if ((Index >= 0) && (Index < Count)) {
@@ -269,7 +271,8 @@ public:
 
     template<typename T>
     friend ostream& operator<<(ostream& os, TMass<T>& tmp);
-    //template<typename T>
+    template<typename T>
+    friend class TTree;
 };
 
 class TData {
@@ -386,6 +389,8 @@ public:
     ~TNode() {}
     template<typename T>
     friend ostream& operator<<(ostream& os, TNode<T>& tmp);
+    template<typename T>
+    friend class TTree;
 };
 template<typename T>
 ostream& operator<<(ostream& os, TNode<T>& tmp) {
@@ -409,24 +414,20 @@ int TNodeCMP(TNode<T>& tmp1, TNode<T>& tmp2) {
 template<typename T>
 class TTree {
 private:
-    int MaxHeight;
     TNode<T> Root;
-    int (*CmpNode)(TNode<T>&, TNode<T>&);
-    int (*CmpItem)(T&, T&);
-    TData(*GetData)(T& tmp, int i);
-    TMass<TNode<T>> tmpNodeMass;
-    bool CreateTmpNode;
+    int (*pCmpNode)(TNode<T>&, TNode<T>&);
+    int (*pCmpItem)(T&, T&);
 public:
-    TTree() : CmpNode(nullptr), CmpItem(nullptr), GetData(nullptr){
-        //Root.SonMass.setCmp();
+    TTree() : pCmpNode(nullptr), pCmpItem(nullptr), pGetData(nullptr){
+        
         Root.Data.Caption = "ROOT";
         CreateTmpNode = 0;
         MaxHeight = 0;
     }
     TTree(int (*_CmpNode)(TNode<T>&, TNode<T>&), int (*_CmpItem)(T&, T&), 
             TData(*GetData)(T& tmp, int i) = nullptr, bool _CreateTmpNode = 0) {
-        CmpNode = _CmpNode;
-        CmpItem = _CmpItem;
+        pCmpNode = _CmpNode;
+        pCmpItem = _CmpItem;
         Root.SonMass.setCmp(_CmpNode);
         Root.ItemMass.setCmp(_CmpItem);
         Root.Data.Caption = "ROOT";
@@ -435,10 +436,10 @@ public:
         MaxHeight = 0;
     }
     TTree(TTree& tmp) {
-        GetData = tmp.GetData;
+        pGetData = tmp.pGetData;
         Root = tmp.Root;
-        CmpNode = tmp.CmpNode;
-        CmpItem = tmp.CmpItem;
+        pCmpNode = tmp.pCmpNode;
+        pCmpItem = tmp.pCmpItem;
         CreateTmpNode = tmp.CreateTmpNode;
         MaxHeight = tmp.MaxHeight;
     }
@@ -450,37 +451,37 @@ public:
 private:
     bool AddProduct_private(T& product, TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         if (index == height) {
-            if (TDataCMPstr(node.Data, mass.getItem(height))) {
+            if (TDataCMPstr(node.Data, mass[height])) {
                 node.ItemMass.AddItem(product);
             }
             else { return 0; }
         }
         else {
-            if (TDataCMPstr(node.Data, mass.getItem(height))) {
+            if (TDataCMPstr(node.Data, mass[height])) {
                 int tmp = 0;
                 node.ItemMass.AddItem(product);
-                for (int i = 0; i < node.SonMass.getCount(); i++) {
-                    if (AddProduct_private(product, mass, *node.SonMass.getItem(i), index, height + 1)) {
+                for (int i = 0; i < node.SonMass.Count; i++) {
+                    if (AddProduct_private(product, mass, node.SonMass[i], index, height + 1)) {
                         return 1;
                     }
                     else tmp++;
                 }if (CreateTmpNode) {               
-                    if (tmp == node.SonMass.getCount()) {           
-                        if (GetData==nullptr) {
+                    if (tmp == node.SonMass.Count) {           
+                        if (pGetData==nullptr) {
                             if (MaxHeight == height) { MaxHeight++; }
                             TData* d1 = new TData(0, mass.getItem(height + 1));
-                            TNode<T>* tmpNode = new TNode<T>(CmpNode, CmpItem, *d1);
+                            TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, *d1);
                             node.SonMass.AddItem(*tmpNode);
                             tmpNodeMass.AddItem(*tmpNode);
-                            AddProduct_private(product, mass, *node.SonMass.getItem(tmp), index, height + 1);
+                            return AddProduct_private(product, mass, node.SonMass[tmp], index, height + 1);
                         }
                         else {
                             if (MaxHeight == height) { MaxHeight++; }
-                            TData d1(GetData(product, height+1 ));
-                            TNode<T>* tmpNode = new TNode<T>(CmpNode, CmpItem, d1);
+                            TData d1(pGetData(product, height+1 ));
+                            TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, d1);
                             node.SonMass.AddItem(*tmpNode);
                             tmpNodeMass.AddItem(*tmpNode);
-                            return AddProduct_private(product, mass, *node.SonMass.getItem(tmp), index, height + 1);
+                            return AddProduct_private(product, mass, node.SonMass[tmp], index, height + 1);
                             
                         }
                     }
@@ -496,28 +497,28 @@ private:
     }
     bool AddNode_private(TNode<T>& NewNode, TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         if (index == height) {
-            if (TDataCMPstr(node.Data, mass.getItem(height))) {
+            if (TDataCMPstr(node.Data, mass[height])) {
                 node.SonMass.AddItem(NewNode);
             }
             else { return 0; }
         }
         else {
-            if (TDataCMPstr(node.Data, mass.getItem(height))) {
+            if (TDataCMPstr(node.Data, mass[height])) {
                 int tmp = 0;
 
-                for (int i = 0; i < node.SonMass.getCount(); i++) {
-                    if (AddNode_private(NewNode, mass, *node.SonMass.getItem(i), index, height + 1)) {
+                for (int i = 0; i < node.SonMass.Count; i++) {
+                    if (AddNode_private(NewNode, mass, node.SonMass[i], index, height + 1)) {
                         return 1;
                     }
                     else tmp++;
                 }if (CreateTmpNode) {
-                    if (tmp == node.SonMass.getCount()) {
+                    if (tmp == node.SonMass.Count) {
                         if (MaxHeight == height) { MaxHeight++; }
-                        TData* d1 = new TData(0, mass.getItem(height + 1));
-                        TNode<T>* tmpNode = new TNode<T>(CmpNode, CmpItem, *d1);
+                        TData* d1 = new TData(0, mass[height + 1]);
+                        TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, *d1);
                         node.SonMass.AddItem(*tmpNode);
                         tmpNodeMass.AddItem(*tmpNode);
-                        AddNode_private(NewNode, mass, *node.SonMass.getItem(tmp), index, height + 1);
+                        AddNode_private(NewNode, mass, node.SonMass[tmp], index, height + 1);
                     }
                     else { return 0; }
                 }
@@ -531,7 +532,7 @@ private:
     }
     TMass<TNode<T>>& FaindAllNode_private(TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         TMass<TNode<T>>* Out = new TMass<TNode<T>>;
-        Out->setCmp(TNodeCMP);
+        Out->cmp = TNodeCMP;
         if (index == height) {
             Out->AddItem(node);
             return *Out;
@@ -539,9 +540,9 @@ private:
         else {
             if (height > index) { cerr << "height > index index: " << index << "height: " << height << endl; }
             else {
-                if ((mass.getItem(index - 1) == "No") || (TDataCMPstr(node.Data, mass.getItem(index)))) {
-                    for (int i = 0; i < node.SonMass.getCount(); i++) {
-                        *Out += FaindAllNode_private(mass, *node.SonMass.getItem(i), index, height + 1);
+                if ((mass[index - 1] == "No") || (TDataCMPstr(node.Data, mass[index]))) {
+                    for (int i = 0; i < node.SonMass.Count; i++) {
+                        *Out += FaindAllNode_private(mass, node.SonMass[i], index, height + 1);
                     }
                 }
                 return *Out;
@@ -551,18 +552,17 @@ private:
     }
     TMass<T>& FaindAllProduct_private(TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         TMass<T>* Out = new TMass<T>;
-        Out->setCmp(CmpItem);
+        Out->setCmp(pCmpItem);
         if (index == height) {
-
             *Out += node.ItemMass;
             return *Out;
         }
         else {
             if (height > index) { cerr << "height > index index: " << index << "height: " << height << endl; }
             else {
-                if ((mass.getItem(index - 1) == "No") || (TDataCMPstr(node.Data, mass.getItem(index)))) {
-                    for (int i = 0; i < node.SonMass.getCount(); i++) {
-                        *Out += FaindAllProduct_private(mass, *node.SonMass.getItem(i), index, height + 1);
+                if ((mass[index - 1] == "No") || (TDataCMPstr(node.Data, mass[index]))) {
+                    for (int i = 0; i < node.SonMass.Count; i++) {
+                        *Out += FaindAllProduct_private(mass, node.SonMass[i], index, height + 1);
                     }
                 }
                 return *Out;
@@ -571,10 +571,10 @@ private:
         }
     }
 public:
-    void setCmpNode(int (*_CmpNode)(TNode<T>&, TNode<T>&)) { CmpNode = _CmpNode; }
-    void setCmpItem(int (*_CmpItem)(T&, T&)) { CmpItem = _CmpItem; }
+    void setCmpNode(int (*_CmpNode)(TNode<T>&, TNode<T>&)) { pCmpNode = _CmpNode; }
+    void setCmpItem(int (*_CmpItem)(T&, T&)) { pCmpItem = _CmpItem; }
     void setGetData(TData(*_GetData)(T& tmp, int i)) {
-        GetData = _GetData;
+        pGetData = _GetData;
     }
     int getMaxHeight() {return MaxHeight;}
     TMass<TNode<T>>& FaindAllNode(TStringMass& mass, int index = -1) {
@@ -603,4 +603,9 @@ public:
         if (mass.getItem(0) != "ROOT") { throw; }
         return AddProduct_private(product, mass, Root, index, 0);
     }
+private:    
+    TData(*pGetData)(T& tmp, int i);
+    TMass<TNode<T>> tmpNodeMass;
+    int MaxHeight;
+    bool CreateTmpNode;
 };

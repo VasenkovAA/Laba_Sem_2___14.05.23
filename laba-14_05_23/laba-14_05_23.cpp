@@ -39,19 +39,6 @@ int TProductCMP(TProduct& tmp1, TProduct& tmp2) {
 int main()
 {
     TData d1(1, "caption - 1"), d2(2, "caption - 2"), d3(3, "caption - 3");
-    //TProduct* p = new TProduct("123"), *p2 = new TProduct("123-1");
-    //TList<TProduct> l;
-
-    //l.add(*p);
-    //l.add(*p2);
-    //l.add(*p);
-    //l.print();
-    //
-    //TSpecificationMass tmp;
-    //tmp.add(d1);
-    //tmp.add(d2);
-    //tmp.add(d3);
-    //cout << tmp;
 
         TNode<TProduct> n1(TNodeCMP, TProductCMP, d1), n2(TNodeCMP, TProductCMP, d2), n3(TNodeCMP, TProductCMP, d3);
         
@@ -63,7 +50,7 @@ int main()
 
         TStringMass Parm1; string s1 = ("caption - 3"), s2 = ("caption - 2"), s3 = ("caption - 1");
         TStringMass Parm2; string s4 = ("No"), s5 = ("No"), s6 = ("No");
-        //TStringMass Parm3;
+
         Parm1.AddItem("ROOT");
         Parm1.AddItem("caption - 1");
         Parm1.AddItem("caption - 2");
