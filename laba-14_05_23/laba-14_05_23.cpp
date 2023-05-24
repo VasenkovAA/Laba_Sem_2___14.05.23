@@ -1,4 +1,4 @@
-﻿#include "CTreeLib.hpp"
+﻿#include "CTreeLib.h"
 #include "CListLib.hpp"
 
 
@@ -77,21 +77,21 @@ int main()
 
         tree.setGetData(CMP);
 
-        tree.AddNode(n1, Parm1, 0);
-        tree.AddNode(n2, Parm1, 1);
-        tree.AddNode(n3, Parm1, 2);
+        tree.AddData(n1, Parm1, 0);
+        tree.AddData(n2, Parm1, 1);
+        tree.AddData(n3, Parm1, 2);
         cout << tree.AddProduct(p_1, p_1.Spec.getCaptionMass(), 0) << endl;
         cout << tree.AddProduct(p_2, p_2.Spec.getCaptionMass(), 1) << endl;
         cout << tree.AddProduct(p_3, p_3.Spec.getCaptionMass(), 2) << endl;
 
         cout << " --- 0 --- " << endl;
-        cout << tree.FaindAllNode(Parm2, 0) << endl;
+        cout << tree.FaindAllData(Parm2, 0) << endl;
         cout << " --- 1 --- " << endl;
-        cout << tree.FaindAllNode(Parm2, 1) << endl;
+        cout << tree.FaindAllData(Parm2, 1) << endl;
         cout << " --- 2 --- " << endl;
-        cout << tree.FaindAllNode(Parm2, 2) << endl;
+        cout << tree.FaindAllData(Parm2, 2) << endl;
         cout << " --- 3 --- " << endl;
-        cout << tree.FaindAllNode(Parm2, 3) << endl;
+        cout << tree.FaindAllData(Parm2, 3) << endl;
         cout << " --- end --- " << endl;
         cout << tree.FaindAllProduct(Parm2, 2) << endl;
         cout << " --- end --- " << endl;

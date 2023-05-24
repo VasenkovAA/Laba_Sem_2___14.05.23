@@ -246,7 +246,6 @@ public:
         Item = nullptr;
         Count = 0;
     }
-
     TStringMass() :Count(0), Item(nullptr) { }
     TStringMass(TStringMass& tmp) : Count(tmp.Count), Item(nullptr) {
         Item = new string[Count];
@@ -268,7 +267,6 @@ public:
         }
         else throw logic_error("Index not faund");
     }
-
     template<typename T>
     friend ostream& operator<<(ostream& os, TMass<T>& tmp);
     template<typename T>
@@ -449,7 +447,24 @@ public:
         }
     }
 private:
-    bool AddProduct_private(T& product, TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
+    void createItem(TNode<T>& node, TStringMass& mass, int height, bool index = 0, T*product = nullptr) {
+        if (MaxHeight == height) { MaxHeight++; }
+        if (index) {
+            TData d1(pGetData(*product, height + 1));
+            TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, d1);
+            node.SonMass.AddItem(*tmpNode);
+            tmpNodeMass.AddItem(*tmpNode);
+        }
+        else {
+            TData* d1 = new TData(0, mass[height + 1]);
+            TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, *d1);
+            node.SonMass.AddItem(*tmpNode);
+            tmpNodeMass.AddItem(*tmpNode);
+        }
+    
+    }
+
+    bool AddProduct(T& product, TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         if (index == height) {
             if (TDataCMPstr(node.Data, mass[height])) {
                 node.ItemMass.AddItem(product);
@@ -461,29 +476,14 @@ private:
                 int tmp = 0;
                 node.ItemMass.AddItem(product);
                 for (int i = 0; i < node.SonMass.Count; i++) {
-                    if (AddProduct_private(product, mass, node.SonMass[i], index, height + 1)) {
+                    if (AddProduct(product, mass, node.SonMass[i], index, height + 1)) {
                         return 1;
                     }
                     else tmp++;
                 }if (CreateTmpNode) {               
                     if (tmp == node.SonMass.Count) {           
-                        if (pGetData==nullptr) {
-                            if (MaxHeight == height) { MaxHeight++; }
-                            TData* d1 = new TData(0, mass.getItem(height + 1));
-                            TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, *d1);
-                            node.SonMass.AddItem(*tmpNode);
-                            tmpNodeMass.AddItem(*tmpNode);
-                            return AddProduct_private(product, mass, node.SonMass[tmp], index, height + 1);
-                        }
-                        else {
-                            if (MaxHeight == height) { MaxHeight++; }
-                            TData d1(pGetData(product, height+1 ));
-                            TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, d1);
-                            node.SonMass.AddItem(*tmpNode);
-                            tmpNodeMass.AddItem(*tmpNode);
-                            return AddProduct_private(product, mass, node.SonMass[tmp], index, height + 1);
-                            
-                        }
+                        createItem(node, mass, height, (tmp == node.SonMass.Count),&product);
+                        return AddProduct(product, mass, node.SonMass[tmp], index, height + 1);
                     }
                     else { cerr << "????????????????????????????????????? ERROR: " << tmp << endl; }
                 }
@@ -495,7 +495,7 @@ private:
             }
         }
     }
-    bool AddNode_private(TNode<T>& NewNode, TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
+    bool AddData(TNode<T>& NewNode, TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         if (index == height) {
             if (TDataCMPstr(node.Data, mass[height])) {
                 node.SonMass.AddItem(NewNode);
@@ -507,18 +507,14 @@ private:
                 int tmp = 0;
 
                 for (int i = 0; i < node.SonMass.Count; i++) {
-                    if (AddNode_private(NewNode, mass, node.SonMass[i], index, height + 1)) {
+                    if (AddData(NewNode, mass, node.SonMass[i], index, height + 1)) {
                         return 1;
                     }
                     else tmp++;
                 }if (CreateTmpNode) {
                     if (tmp == node.SonMass.Count) {
-                        if (MaxHeight == height) { MaxHeight++; }
-                        TData* d1 = new TData(0, mass[height + 1]);
-                        TNode<T>* tmpNode = new TNode<T>(pCmpNode, pCmpItem, *d1);
-                        node.SonMass.AddItem(*tmpNode);
-                        tmpNodeMass.AddItem(*tmpNode);
-                        AddNode_private(NewNode, mass, node.SonMass[tmp], index, height + 1);
+                        createItem(node, mass, height, 0);
+                        return AddData(NewNode, mass, node.SonMass[tmp], index, height + 1);
                     }
                     else { return 0; }
                 }
@@ -530,7 +526,7 @@ private:
             }
         }
     }
-    TMass<TNode<T>>& FaindAllNode_private(TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
+    TMass<TNode<T>>& FaindAllData(TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         TMass<TNode<T>>* Out = new TMass<TNode<T>>;
         Out->cmp = TNodeCMP;
         if (index == height) {
@@ -542,7 +538,7 @@ private:
             else {
                 if ((mass[index - 1] == "No") || (TDataCMPstr(node.Data, mass[index]))) {
                     for (int i = 0; i < node.SonMass.Count; i++) {
-                        *Out += FaindAllNode_private(mass, node.SonMass[i], index, height + 1);
+                        *Out += FaindAllData(mass, node.SonMass[i], index, height + 1);
                     }
                 }
                 return *Out;
@@ -550,7 +546,7 @@ private:
             }
         }
     }
-    TMass<T>& FaindAllProduct_private(TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
+    TMass<T>& FaindAllProduct(TStringMass& mass, TNode<T>& node, int index = 0, int height = 0) {
         TMass<T>* Out = new TMass<T>;
         Out->setCmp(pCmpItem);
         if (index == height) {
@@ -562,7 +558,7 @@ private:
             else {
                 if ((mass[index - 1] == "No") || (TDataCMPstr(node.Data, mass[index]))) {
                     for (int i = 0; i < node.SonMass.Count; i++) {
-                        *Out += FaindAllProduct_private(mass, node.SonMass[i], index, height + 1);
+                        *Out += FaindAllProduct(mass, node.SonMass[i], index, height + 1);
                     }
                 }
                 return *Out;
@@ -577,31 +573,31 @@ public:
         pGetData = _GetData;
     }
     int getMaxHeight() {return MaxHeight;}
-    TMass<TNode<T>>& FaindAllNode(TStringMass& mass, int index = -1) {
+    TMass<TNode<T>>& FaindAllData(TStringMass& mass, int index = -1) {
         if (index == -1) { index = mass.getCount(); }
         if (mass.getCount() == 0) { throw; }
         if (mass.getItem(0) != "ROOT" && mass.getItem(0) != "No") { throw; }
-        return FaindAllNode_private(mass, Root, index, 0);
+        return FaindAllData(mass, Root, index, 0);
     }
     TMass<T>& FaindAllProduct(TStringMass& mass, int index = -1) {
         if (index == -1) { index = mass.getCount(); }
         if (mass.getCount() == 0) { throw; }
         if (mass.getItem(0) != "ROOT" && mass.getItem(0) != "No") { throw; }
-        return FaindAllProduct_private(mass, Root, index, 0);
+        return FaindAllProduct(mass, Root, index, 0);
     }
-    bool AddNode(TNode<T>& NewNode, TStringMass& mass, int index = -1) {
+    bool AddData(TNode<T>& NewNode, TStringMass& mass, int index = -1) {
         if (index < -1) { throw; }
         if (index == -1) { index = mass.getCount()-1; }
         if (mass.getCount() == 0) { throw; }
         if (mass.getItem(0) != "ROOT") { throw; }
-        return AddNode_private(NewNode, mass, Root, index, 0);
+        return AddData(NewNode, mass, Root, index, 0);
     }
     bool AddProduct(T&product, TStringMass& mass, int index = -1) {
         if (index < -1) { throw; }
         if (index == -1) { index = mass.getCount()-1; }
         if (mass.getCount() == 0) { throw; }
         if (mass.getItem(0) != "ROOT") { throw; }
-        return AddProduct_private(product, mass, Root, index, 0);
+        return AddProduct(product, mass, Root, index, 0);
     }
 private:    
     TData(*pGetData)(T& tmp, int i);
