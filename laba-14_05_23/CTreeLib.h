@@ -392,9 +392,10 @@ public:
 };
 template<typename T>
 ostream& operator<<(ostream& os, TNode<T>& tmp) {
-    os << ORANGE << "Addres:" << RESET << &tmp << endl;
+    os << ORANGE << "Node addres:" << RESET << &tmp << endl;
     os << GREEN << "SonMassCount:" << RESET << tmp.SonMass.getCount() << endl;
     os << GREEN << "ItemMassCount:" << RESET << tmp.ItemMass.getCount() << endl;
+    if (tmp.SonMass.getCount()!=0) { cout << ORANGE << "Son addres:" << RESET << endl; }
     for (int i = 0; i < tmp.SonMass.getCount(); i++) {
         os << "[" << i << "]\tAddres:" << RESET << endl;
         os << tmp.SonMass.getItem(i) << endl;
@@ -485,7 +486,8 @@ private:
                         createItem(node, mass, height, (tmp == node.SonMass.Count),&product);
                         return AddProduct(product, mass, node.SonMass[tmp], index, height + 1);
                     }
-                    else { cerr << "????????????????????????????????????? ERROR: " << tmp << endl; }
+                    else { cerr << "????????????????????????????????????? ERROR: "<<
+                        "how did you get here you pervert????" << tmp << endl; }
                 }
                 else { throw; }
 
@@ -542,7 +544,6 @@ private:
                     }
                 }
                 return *Out;
-
             }
         }
     }
@@ -562,7 +563,6 @@ private:
                     }
                 }
                 return *Out;
-
             }
         }
     }
