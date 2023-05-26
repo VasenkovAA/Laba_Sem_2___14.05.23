@@ -131,6 +131,7 @@
     <ClCompile Include="testLaba_26.02.23.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CListLib.h" />
     <ClInclude Include="CMass.h" />
     <ClInclude Include="CProduct.h" />
     <ClInclude Include="CTreeLib.h" />
