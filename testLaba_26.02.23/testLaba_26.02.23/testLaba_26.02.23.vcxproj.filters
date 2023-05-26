@@ -15,19 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="laba-14_05_23.cpp">
+    <ClCompile Include="testLaba_26.02.23.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="CTreeLib.cpp">
+    <ClCompile Include="CDataLib.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CTreeLib.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="CMass.h">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="CListLib.hpp">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="CDataLib.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="CTreeLib.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="CProduct.h">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

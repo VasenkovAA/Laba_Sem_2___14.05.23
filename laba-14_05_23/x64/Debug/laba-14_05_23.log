@@ -1,7 +1,0 @@
-﻿  laba-14_05_23.cpp
-C:\Users\user\Desktop\Laba_Sem_2___14.05.23\laba-14_05_23\CTreeLib.h(347): warning C4715: TSpecificationMass::getData: значение возвращается не при всех путях выполнения
-C:\Users\user\Desktop\Laba_Sem_2___14.05.23\laba-14_05_23\CTreeLib.h(499): warning C4715: TTree<TProduct>::AddProduct: значение возвращается не при всех путях выполнения
-C:\Users\user\Desktop\Laba_Sem_2___14.05.23\laba-14_05_23\CTreeLib.h(549): warning C4715: TTree<TProduct>::FaindAllData: значение возвращается не при всех путях выполнения
-C:\Users\user\Desktop\Laba_Sem_2___14.05.23\laba-14_05_23\CTreeLib.h(530): warning C4715: TTree<TProduct>::AddData: значение возвращается не при всех путях выполнения
-C:\Users\user\Desktop\Laba_Sem_2___14.05.23\laba-14_05_23\CTreeLib.h(568): warning C4715: TTree<TProduct>::FaindAllProduct: значение возвращается не при всех путях выполнения
-  laba-14_05_23.vcxproj -> C:\Users\user\Desktop\Laba_Sem_2___14.05.23\x64\Debug\laba-14_05_23.exe
