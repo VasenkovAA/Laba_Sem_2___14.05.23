@@ -35,5 +35,8 @@
     <ClInclude Include="CProduct.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="CListLib.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
