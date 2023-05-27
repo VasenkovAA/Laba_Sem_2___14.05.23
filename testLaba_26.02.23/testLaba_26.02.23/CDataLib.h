@@ -31,6 +31,7 @@ public:
     std::string ContextInfo;
     TData();
     TData(int _id, std::string _caption);
+    TData(int _id, std::string _caption,std::string _category,std::string _contextInfo);
     TData(const TData& tmp);
     ~TData();
     TData& operator=(const TData& tmp);

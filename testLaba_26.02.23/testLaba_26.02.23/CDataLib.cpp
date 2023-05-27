@@ -73,6 +73,12 @@ std::string& TStringMass::operator[](int index) {
     else throw std::logic_error("Index not faund");
 }
 
+TData::TData(int _id, std::string _caption, std::string _category, std::string _contextInfo) {
+    id = _id;
+    Caption = _caption;
+    Category = _category;
+    ContextInfo = _contextInfo;
+}
 TData::TData() :id(-1), Caption("No"), Category("No"), ContextInfo("No") {}
 TData::TData(int _id, std::string _caption) :id(_id), Caption(_caption), Category("No"), ContextInfo("No") {}
 TData::TData(const TData& tmp) {
@@ -90,7 +96,9 @@ TData& TData::operator=(const TData& tmp) {
     return *this;
 }
 std::ostream& operator<<(std::ostream& os, TData& tmp) {
-    os << tmp.id << " " << tmp.Caption << " " << tmp.Category << " " << tmp.ContextInfo << "\n";
+    os <<ORANGE<<"id:"<<RESET<< tmp.id << " " <<ORANGE
+        << tmp.Caption << ": "<<RESET << tmp.Category << "\t" 
+        <<ORANGE<<"ContextInfo: "<<RESET<< tmp.ContextInfo << "\n";
     return os;
 }
 bool TDataCMPstr(TData t, std::string str) {
