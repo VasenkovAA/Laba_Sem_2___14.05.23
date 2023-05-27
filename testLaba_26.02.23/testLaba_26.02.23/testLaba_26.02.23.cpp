@@ -1,7 +1,5 @@
 ﻿
 #include <iostream>
-//#include "CMass.h"
-//#include "CDataLib.h"
 #include "CTreeLib.h"
 #include "CProduct.h"
 using namespace std;
@@ -27,9 +25,10 @@ int main()
     parm_list_for_search.AddItem("No");
 
     //создаем Data(данные) для для продукта(шкафа)
-    TData parametr_1_ROOT(-1, "ROOT");
+    TData parametr_1_ROOT(-1, "ROOT","ROOT","ROOT");
     TData parametr_2_color(0, "Color","Red","color of product");
-    TData parametr_3_window(0,"the presence of a window", "with a window","parameter that determines the presence of a window in the cabinet");
+    TData parametr_3_window(0,"the presence of a window", "with a window",
+        "parameter that determines the presence of a window in the cabinet");
 
     //заполняем массив спецификаций продукта(его данные и характеристики)
     product_closet.Spec.add(parametr_1_ROOT);
@@ -39,9 +38,10 @@ int main()
     //устанавливаем функцию поиска параметров у продуктов для дерева
     tree.setGetData(CMP);
     //добавляем продукт по их внутреннему списку параметров(характеристик продкта)
-    cout << tree.AddProduct(product_closet, product_closet.Spec.getCaptionMass(), 2) << endl;
+    cout<<"result of adding a product (whether a product was added): " 
+        << tree.AddProduct(product_closet, product_closet.Spec.getCaptionMass(), 2) << endl;
 
-    //Вывод всех уровней дерева
+    //Вывод перывй четырех уровней дерева
     cout << " --- 0 --- " << endl;
     cout << tree.FaindAllData(parm_list_for_search, 0) << endl;
     cout << " --- 1 --- " << endl;
